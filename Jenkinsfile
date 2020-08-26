@@ -37,6 +37,8 @@ node('maven') {
 
   stage('Build') {
     withEnv(["JAVA_HOME=${tool 'java-1.8.0-openjdk'}", "PATH=${tool 'java-1.8.0-openjdk'}/bin:${env.PATH}"]) {
+        sh "java -version"
+        sh "mvn -version"
         sh "${mvnCmd} clean install -DskipTests=true -f ${pomFileLocation}"
     }
 
