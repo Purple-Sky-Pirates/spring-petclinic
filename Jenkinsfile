@@ -7,6 +7,10 @@
 
 String ocpApiServer = env.OCP_API_SERVER ? "${env.OCP_API_SERVER}" : "https://openshift.default.svc.cluster.local"
 
+  tools {
+    jdk 'java-1.8.0-openjdk'
+  }
+
 node('master') {
 
   env.NAMESPACE = readFile('/var/run/secrets/kubernetes.io/serviceaccount/namespace').trim()
@@ -32,8 +36,9 @@ node('maven') {
   }
 
   stage('Build') {
-
-    sh "${mvnCmd} clean install -DskipTests=true -f ${pomFileLocation}"
+    withEnv(["JAVA_HOME=${tool 'java-1.8.0-openjdk'}", "PATH=${tool 'java-1.8.0-openjdk'}/bin:${env.PATH}"]) {
+        sh "${mvnCmd} clean install -DskipTests=true -f ${pomFileLocation}"
+    }
 
   }
 
